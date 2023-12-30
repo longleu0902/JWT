@@ -9,12 +9,12 @@ const handleUserPage = async (req, res) => {
     // console.log(">>>check user list", userList)
     return res.render("user.ejs", { userList })
 }
-const handleCreateNewUser = (req, res) => {
+const handleCreateNewUser =  async (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
     let username = req.body.username;
 
-    userService.createNewUser(email, password, username)
+     await userService.createNewUser(email, password, username)
     // console.log(">>>check request: ", req.body)
     return res.redirect("/user")
 
@@ -28,12 +28,12 @@ const handleDeleteUser = (req, res) => {
 const getUpdateUserPage = async (req, res) => {
     let id = req.params.id;
     let user = await userService.getUserById(id);
-    let userData = {};
-    if (user && user.length > 0) {
-        userData = user[0];
+    let userData = user;
+    // if (user && user.length > 0) {
+    //     userData = user[0];
 
-    }
-    // console.log(">>>check user",user)
+    // }
+    console.log(">>>check user data",userData)
     return res.render("user-update.ejs", { userData })
 }
 
