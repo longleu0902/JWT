@@ -96,7 +96,7 @@ const handleUserLogin = async (rawData) => {
                 }
             }
         }
-        
+
         console.log(">>>Not found user with email/phone", rawData.valueLogin,"password",rawData.password)
         return {
             EM: 'Your email/phone or password is incorrect!',
@@ -116,5 +116,5 @@ const handleUserLogin = async (rawData) => {
 
 }
 module.exports = {
-    registerNewUser, handleUserLogin
+    registerNewUser, handleUserLogin ,checkEmailExist ,checkPhoneExist ,hashUserPassword
 }
