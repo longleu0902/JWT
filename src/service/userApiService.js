@@ -1,5 +1,5 @@
 import db from '../models/index';
-import {checkEmailExist ,checkPhoneExist, hashUserPassword} from "./loginRegisterService"
+import { checkEmailExist, checkPhoneExist, hashUserPassword } from "./loginRegisterService"
 
 const getAllUser = async () => {
     try {
@@ -39,8 +39,8 @@ const getUserWithPagination = async (page, limit) => {
         const { count, rows } = await db.User.findAndCountAll({
             offset: offset,
             limit: limit,
-            attributes: ["id", "username", "email", "phone", "sex","address"],
-            include: { model: db.Group, attributes: ["name", "description","id"] },
+            attributes: ["id", "username", "email", "phone", "sex", "address"],
+            include: { model: db.Group, attributes: ["name", "description", "id"] },
             nest: true,
             order: [['id', 'DESC']],
         })
@@ -75,7 +75,7 @@ const createNewUser = async (data) => {
             return {
                 EM: 'The email is already exist',
                 EC: 1,
-                DT:"email"
+                DT: "email"
             }
         }
         let isPhoneExist = await checkPhoneExist(data.phone);
@@ -83,13 +83,13 @@ const createNewUser = async (data) => {
             return {
                 EM: 'The phone number is already exist',
                 EC: 1,
-                DT:"phone"
+                DT: "phone"
 
             }
         }
         //hash password
         let hashPassword = hashUserPassword(data.password)
-        await db.User.create({...data,password: hashPassword});
+        await db.User.create({ ...data, password: hashPassword });
         return {
             EM: 'Create user success',
             EC: 0,
@@ -109,27 +109,54 @@ const createNewUser = async (data) => {
 }
 const updateUser = async (data) => {
     try {
+        if (!data.groupId) {
+            return {
+                EM: 'Error with empty Group Id',
+                EC: 1,
+                DT: "group"
+            }
+        }
         let user = await db.User.findOne({
             where: { id: data.id }
         })
         if (user) {
-            //update
+            await user.update({
+                username : data.username ,
+                address : data.address ,
+                sex : data.sex ,
+                groupId : data.groupId
+            })
+            return {
+                EM: 'Update user success',
+                EC: 0,
+                DT: []
+            }
+    
 
         } else {
-            // not found
+            return {
+                EM: 'User not found',
+                EC: 1,
+                DT: []
+            }
         }
 
     } catch (err) {
         console.log(err)
+        return {
+            EM: 'Something wrongs with service',
+            EC: 2,
+            DT: []
+        }
     }
 
 }
 const deleteUser = async (id) => {
     try {
-       let user = await db.User.findOne({
+        let user = await db.User.findOne({
             where: { id: id }
         })
-        if(user){
+        if (user) {
             await user.destroy();
 
 
@@ -139,7 +166,7 @@ const deleteUser = async (id) => {
                 DT: []
             }
 
-        }else{
+        } else {
             return {
                 EM: 'User not exist',
                 EC: 2,
