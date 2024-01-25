@@ -5,6 +5,7 @@ import initApiRoutes from "./routes/api";
 import bodyParser from "body-parser";
 import connection from "./config/connectDB"
 import configCors from "./config/cors"
+import cookieParser from 'cookie-parser'
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
@@ -21,9 +22,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //test connection db
 connection();
 
+//config cookie-parser
+app.use(cookieParser());
 //init Web Router
 initWebRoutes(app);
-initApiRoutes(app)
+initApiRoutes(app);
+
+app.use((req, res) => {
+    return res.send('404 not found')
+})
 
 app.listen(PORT, () => {
     console.log(">>>JWT Backend is running on the port" + PORT)

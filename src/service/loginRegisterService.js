@@ -3,6 +3,10 @@ import db from '../models/index';
 import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize'
 const salt = bcrypt.genSaltSync(10);
+import { getGroupWithRoles } from "./jwtService"
+import { createJWT } from "../middleware/JWTAction"
+require("dotenv").config();
+
 
 const checkEmailExist = async (userEmail) => {
     let user = await db.User.findOne({
@@ -55,6 +59,7 @@ const registerNewUser = async (rawUserData) => {
             username: rawUserData.username,
             phone: rawUserData.phone,
             password: hashPassword,
+            groupId: 4
 
         })
         return {
@@ -85,19 +90,32 @@ const handleUserLogin = async (rawData) => {
             }
         })
         if (user) {
-            console.log(">>>found user with email/phone")
             let isCorrectPassword = checkPassword(rawData.password, user.password)
             if (isCorrectPassword === true) {
+
+
+                //test roles
+                let groupWithRoles = await getGroupWithRoles(user);
+                let payload = {
+                    email: user.email,
+                    groupWithRoles,
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                }
+                // let token 
+                let token = createJWT(payload)
                 return {
                     EM: 'ok',
                     EC: 0,
-                    DT: ''
+                    DT: {
+                        access_token: token,
+                        groupWithRoles
+                    }
 
                 }
             }
         }
 
-        console.log(">>>Not found user with email/phone", rawData.valueLogin,"password",rawData.password)
+        console.log(">>>Not found user with email/phone", rawData.valueLogin, "password", rawData.password)
         return {
             EM: 'Your email/phone or password is incorrect!',
             EC: 1,
@@ -116,5 +134,5 @@ const handleUserLogin = async (rawData) => {
 
 }
 module.exports = {
-    registerNewUser, handleUserLogin ,checkEmailExist ,checkPhoneExist ,hashUserPassword
+    registerNewUser, handleUserLogin, checkEmailExist, checkPhoneExist, hashUserPassword
 }
