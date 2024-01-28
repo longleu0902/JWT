@@ -92,14 +92,12 @@ const handleUserLogin = async (rawData) => {
         if (user) {
             let isCorrectPassword = checkPassword(rawData.password, user.password)
             if (isCorrectPassword === true) {
-
-
                 //test roles
                 let groupWithRoles = await getGroupWithRoles(user);
                 let payload = {
                     email: user.email,
                     groupWithRoles,
-                    expiresIn: process.env.JWT_EXPIRES_IN
+                    username : user.username
                 }
                 // let token 
                 let token = createJWT(payload)
@@ -108,7 +106,9 @@ const handleUserLogin = async (rawData) => {
                     EC: 0,
                     DT: {
                         access_token: token,
-                        groupWithRoles
+                        groupWithRoles,
+                        email : user.email,
+                        username : user.username
                     }
 
                 }

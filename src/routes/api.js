@@ -16,13 +16,17 @@ const router = express.Router();
 
 const initApiRoutes = (app) => {
 
+    router.all('*',checkUserJWT,checkUserPermission);
+
     //rest api
     // GET-READ ,POST-CREATE ,PUT-UPDATE, DELETE-D (CRUD)
     router.get("/test-api",apiController.testApi);
     router.post("/register",apiController.handleRegister);
     router.post("/login",apiController.handleLogin);
 
-    router.get("/user/read",checkUserJWT,checkUserPermission,userApiController.readFunc);
+    router.get("/account",userApiController.getUserAccount)
+
+    router.get("/user/read",userApiController.readFunc);
     router.post("/user/create", userApiController.createFunc);
     router.put("/user/update",userApiController.updateFunc);
     router.delete("/user/delete",userApiController.deleteFunc);
