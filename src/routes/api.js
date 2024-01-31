@@ -1,7 +1,8 @@
 import express from "express";
 import apiController from "../controller/apiController";
 import userApiController from "../controller/userApiController";
-import groupApiController from "../controller/groupApiController"
+import groupApiController from "../controller/groupApiController";
+import roleApiController from "../controller/roleApiController"
 import { checkUserJWT, checkUserPermission } from "../middleware/JWTAction"
 
 const router = express.Router();
@@ -34,7 +35,10 @@ const initApiRoutes = (app) => {
     router.delete("/user/delete", userApiController.deleteFunc);
 
     //roles router
-
+    router.get("/role/read", roleApiController.readFunc);
+    router.post("/role/create", roleApiController.createFunc);
+    router.put("/role/update", roleApiController.updateFunc);
+    router.delete("/role/delete", roleApiController.deleteFunc);
 
 
 
