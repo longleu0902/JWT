@@ -50,7 +50,14 @@ const getUserWithPagination = async (page, limit) => {
             totalPage: totalPage,
             users: rows
         }
+        // console.log(">>>check data", offset)
+        // console.log(">>>check count", count)
+        // console.log(">>>check rows", rows)
+        // console.log(">>>check totalPage", totalPage)
         // console.log(">>>check data", data)
+
+
+
 
         return {
             EM: 'fetch ok',
