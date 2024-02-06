@@ -2,7 +2,7 @@ import roleApiService from "../service/roleApiService"
 
 const readFunc = async (req, res) => {
     try{
-        if(req.query.page && req.query.limit){
+        if(req.query && req.query.page && req.query.limit){
             let page = req.query.page;
             let limit = req.query.limit
             // console.log("page",page,"limit",page)
@@ -77,9 +77,32 @@ const deleteFunc = async (req, res) => {
     }   
 
 }
+
+const getRoleByGroup = async (req,res) => {
+    try{
+        let id = req.params.groupId;
+        let data = await roleApiService.RoleByGroup(id);
+        return res.status(200).json({
+            EM :data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        })
+
+        
+    }catch(e){
+        console.log(e)
+        return res.status(500).json({
+            EM:'error from sever', //error message
+            EC:'-1', // Error code
+            DT: '', //data
+        })
+
+    }   
+}
 module.exports = {
     readFunc,
     createFunc,
     updateFunc,
-    deleteFunc
+    deleteFunc,
+    getRoleByGroup
 }
