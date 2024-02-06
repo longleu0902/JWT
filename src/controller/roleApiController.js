@@ -99,10 +99,35 @@ const getRoleByGroup = async (req,res) => {
 
     }   
 }
+
+const assignRole = async (req ,res) => {
+    try{
+        let data = await roleApiService.assignRoleToGroup(req.body)
+        // console.log(data)
+        // console.log(req.body)
+
+        return res.status(200).json({
+            EM :data.EM,
+            EC: data.EC,
+            DT: data.DT,
+        })
+
+        
+    }catch(e){
+        console.log(e)
+        return res.status(500).json({
+            EM:'error from sever', //error message
+            EC:'-1', // Error code
+            DT: '', //data
+        })
+
+    }  
+}
 module.exports = {
     readFunc,
     createFunc,
     updateFunc,
     deleteFunc,
-    getRoleByGroup
+    getRoleByGroup,
+    assignRole
 }
